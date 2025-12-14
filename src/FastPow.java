@@ -61,7 +61,6 @@ public class FastPow {
     public int run(int base, int power){
         this.base = base;
         this.power = power;
-        this.mod = mod;
         ArrayList<Integer> powers = factorizeNum();
 
         ArrayList<Integer> rems = new ArrayList<>();

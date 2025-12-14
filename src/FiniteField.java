@@ -1,8 +1,8 @@
 import java.util.*;
 
 public class FiniteField {
-    private int p;
-    private int[] field;
+    private final int p;
+    private final int[] field;
 
     public FiniteField(int p){
         this.p = p;
