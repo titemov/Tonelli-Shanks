@@ -24,22 +24,13 @@ public class FiniteField {
         return this.field;
     }
 
-    public boolean quadraticResidueCheck(int num){
-        boolean isInArray=false;
+    public int quadraticResidueCheck(int num){
+        FastPow fastPow = new FastPow(this.p);
+        int result;
 
-        int[] squares = new int[this.p];
-        for(int i=0;i<this.field.length;i++){
-            squares[i] = modulo((int)Math.pow(this.field[i],2),this.p);
-        }
+        result = modulo(fastPow.run(num,((this.p-1)/2)), this.p);
 
-        for(int i=0;i < squares.length;i++){
-            if(num==squares[i]){
-                isInArray=true;
-                break;
-            }
-        }
-
-        return isInArray;
+        return result;
     }
 
     public int legendreSymbol(int a){
@@ -53,11 +44,13 @@ public class FiniteField {
 
         if(modulo(a,this.p)==0){
             legendre=0;
-        }else {
-            if (field.quadraticResidueCheck(a)) {
+        }else{
+            int qrResult = field.quadraticResidueCheck(a);
+            if (qrResult==1){
                 legendre = 1;
             }else{
-                legendre = -1;
+                if(qrResult==(this.p-1)) legendre = -1;
+                else return -2;
             }
         }
 

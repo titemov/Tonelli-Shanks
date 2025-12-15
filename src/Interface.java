@@ -172,7 +172,7 @@ public class Interface extends Application {
 
         Scene scene = new Scene(group, Color.rgb(245,245,245));
         stage.setScene(scene);
-        stage.setTitle("Miller-Rabin");
+        stage.setTitle("Tonelli-Shanks");
         stage.setWidth(800);
         stage.setHeight(600);
         stage.setResizable(false);
