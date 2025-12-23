@@ -1,13 +1,11 @@
-import java.util.*;
-
 public class FiniteField {
-    private final int p;
+    private final int prime;
     private final int[] field;
 
-    public FiniteField(int p){
-        this.p = p;
-        this.field = new int[p];
-        for(int i=0;i<p;i++){
+    public FiniteField(int prime){
+        this.prime = prime;
+        this.field = new int[prime];
+        for(int i=0;i<prime;i++){
             this.field[i]=i;
         }
     }
@@ -20,41 +18,71 @@ public class FiniteField {
         }
     }
 
+    private int binaryEuclid(int m,int n){
+        if(m==0) return n;
+        if(n==0) return m;
+        if(m==n) return m;
+
+        if(m%2==0 && n%2==0){
+            return(2*binaryEuclid(m/2,n/2));
+        }
+        if(m%2==0){
+            return(binaryEuclid(m/2,n));
+        }
+        if(n%2==0){
+            return(binaryEuclid(m,n/2));
+        }
+        if(m<n){
+            return(binaryEuclid(m,(n-m)/2));
+        }
+        return (binaryEuclid((m-n)/2, n));
+
+    }
+
+    private int getReverse(int number,int mod){
+        if(binaryEuclid(number,mod)!=1) return -1;
+        if(mod == 1) return 1;
+        number = modulo(number,mod);
+        //each step = [r,x,y,q]
+        int[] step0 = new int[]{mod,1,0,0};
+        int[] step1 = new int[]{number,0,1,mod/number};
+        int[] newStep = new int[4];
+
+        int stop;
+        while(true){
+            stop=step0[0]%step1[0];
+            if(stop==0) break;
+            newStep[0]=stop;
+            newStep[1]=step0[1]-(step1[1]*step1[3]);
+            newStep[2]=step0[2]-(step1[2]*step1[3]);
+            newStep[3]=step1[0]/newStep[0];
+
+            step0[0]=step1[0];
+            step0[1]=step1[1];
+            step0[2]=step1[2];
+            step0[3]=step1[3];
+
+            step1[0]=newStep[0];
+            step1[1]=newStep[1];
+            step1[2]=newStep[2];
+            step1[3]=newStep[3];
+
+        }
+        return modulo(step1[2],mod);
+    }
+
     public int[] getField(){
         return this.field;
     }
 
-    public int quadraticResidueCheck(int num){
-        FastPow fastPow = new FastPow(this.p);
+    public int residueCheck(int num,int power){
+        FastPow fastPow = new FastPow(this.prime);
         int result;
+        int reverse = getReverse(power,this.prime);
 
-        result = modulo(fastPow.run(num,((this.p-1)/2)), this.p);
+        result = fastPow.run(num,((this.prime - 1)*reverse)%this.prime);
 
         return result;
-    }
-
-    public int legendreSymbol(int a){
-        /*
-        =0 если a делаится на p (???)
-        =1 если а является квадратичным вычетом по модулю p, но при этом a не делится на p
-        =-1 если a является квадратичным невычетом по модулю p
-        */
-        int legendre;
-        FiniteField field = new FiniteField(p);
-
-        if(modulo(a,this.p)==0){
-            legendre=0;
-        }else{
-            int qrResult = field.quadraticResidueCheck(a);
-            if (qrResult==1){
-                legendre = 1;
-            }else{
-                if(qrResult==(this.p-1)) legendre = -1;
-                else return -2;
-            }
-        }
-
-        return legendre;
     }
 }
 

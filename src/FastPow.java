@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FastPow {
     private int base;
@@ -38,7 +37,6 @@ public class FastPow {
         int c = 0;
         int[] currentStep = new int[]{a,b,c};
         int[] nextStep = new int[3];
-        //System.out.println(Arrays.toString(currentStep));
 
         while(currentStep[0]!=1) {
             nextStep[0] = currentStep[0] / 2;
@@ -51,14 +49,14 @@ public class FastPow {
 
             for(int i=0;i<currentStep.length;i++){
                 currentStep[i]=nextStep[i];
-                nextStep[i]=0; //any need?
+                nextStep[i]=0;
             }
-            //System.out.println(Arrays.toString(currentStep));
         }
         return (currentStep[1]+currentStep[2])%mod;
     }
 
     public int run(int base, int power){
+        if(power==0) return 1;
         this.base = base;
         this.power = power;
         ArrayList<Integer> powers = factorizeNum();
